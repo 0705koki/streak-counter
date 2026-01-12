@@ -4,26 +4,66 @@
   <meta charset="UTF-8">
   <title>Streak Counter</title>
   <style>
-    body { text-align: center; font-family: sans-serif; margin-top: 100px; }
-    h1 { font-size: 3em; }
+    body { text-align: center; font-family: sans-serif; margin-top: 80px; }
+    h1 { font-size: 3em; margin-bottom: 10px; }
+    #date { font-size: 1.2em; color: gray; margin-bottom: 20px; }
+    #streak-count { font-size: 1.2em; margin-bottom: 20px; }
     button { font-size: 1.5em; padding: 10px 20px; }
+    #message { color: red; margin-top: 20px; font-size: 1.1em; }
   </style>
 </head>
 <body>
   <h1 id="counter">1.00</h1>
-  <button onclick="increase()">＋1%</button>
+  <div id="date">📅 今日の日付: </div>
+  <div id="streak-count">🔢 ストリーク日数: </div>
+  <button id="plusButton" onclick="increase()">＋1%</button>
+  <div id="message"></div>
 
   <script>
     let value = parseFloat(localStorage.getItem("streak") || "1.00");
+    let lastDate = localStorage.getItem("lastDate") || "";
+    let streakCount = parseInt(localStorage.getItem("streakCount") || "0");
+
+    function getToday() {
+      const now = new Date();
+      return now.toISOString().split("T")[0]; // yyyy-mm-dd
+    }
+
     function updateDisplay() {
       document.getElementById("counter").textContent = value.toFixed(2);
+      document.getElementById("date").textContent = "📅 今日の日付: " + getToday();
+      document.getElementById("streak-count").textContent = "🔢 ストリーク日数: " + streakCount;
     }
+
+    function disableButtonWithMessage(msg) {
+      const btn = document.getElementById("plusButton");
+      btn.disabled = true;
+      document.getElementById("message").textContent = msg;
+    }
+
     function increase() {
+      const today = getToday();
+      if (lastDate === today) {
+        disableButtonWithMessage("今日はもう押しました！また明日ね🫶");
+        return;
+      }
+
       value *= 1.01;
+      streakCount += 1;
+      lastDate = today;
+
       localStorage.setItem("streak", value.toString());
+      localStorage.setItem("lastDate", lastDate);
+      localStorage.setItem("streakCount", streakCount.toString());
+
       updateDisplay();
+      disableButtonWithMessage("今日も記録したよ✨えらいっ！");
     }
+
     updateDisplay();
+    if (lastDate === getToday()) {
+      disableButtonWithMessage("今日はもう押しました！また明日来てね💙");
+    }
   </script>
 </body>
 </html>

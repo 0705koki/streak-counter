@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Streak Counter</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; margin-top: 100px; }
+    h1 { font-size: 3em; }
+    button { font-size: 1.5em; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1 id="counter">1.00</h1>
+  <button onclick="increase()">＋1%</button>
+
+  <script>
+    let value = parseFloat(localStorage.getItem("streak") || "1.00");
+    function updateDisplay() {
+      document.getElementById("counter").textContent = value.toFixed(2);
+    }
+    function increase() {
+      value *= 1.01;
+      localStorage.setItem("streak", value.toString());
+      updateDisplay();
+    }
+    updateDisplay();
+  </script>
+</body>
+</html>
